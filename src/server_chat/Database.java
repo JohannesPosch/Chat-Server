@@ -129,7 +129,7 @@ public class Database extends Database_base {
 	
 	public boolean invalidadeToken(final int user_id) throws SQLException{
 		final String SQLInvalidade = "update simplechat.session set sessionkey=?, ip_address=?, leastUse=? where user=?";
-		
+		//TODO: delete the entry from the database
 		if(user_id <= 0)
 			return false;
 		
