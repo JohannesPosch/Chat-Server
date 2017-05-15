@@ -50,6 +50,7 @@ public class ChatServer extends InsecureServer {
 
 		try{
 			worker.interrupt();
+			//TODO: Wait until finished
 		}catch(SecurityException ex){
 			return false;
 		}
@@ -74,9 +75,10 @@ public class ChatServer extends InsecureServer {
 		
 		try {
 			db.openConnection(this.DB_USER, this.DB_PASS);
-		} catch(SQLException ex){
+		} catch(SQLException ex){//TODO: add logger
 			err_code = 20;
 		} catch (ClassNotFoundException ex) {
+			//TODO: same
 			err_code = 21;
 		}
 		
@@ -89,7 +91,7 @@ public class ChatServer extends InsecureServer {
 				err_code = 21;
 			}
 			
-			if(readBuf != null && !readBuf.equals("")){
+			if(!readBuf.isEmpty()){
 				try {
 					jsonObj = (JSONObject) parser.parse(readBuf);
 				} catch (ParseException e1) {
@@ -113,9 +115,6 @@ public class ChatServer extends InsecureServer {
 				}catch(NullPointerException ex){
 					err_code = 21;
 				}
-				
-				if(err_code == 0 && action == null)
-					err_code = 53;
 				
 				if(err_code == 0){
 					responseObj.put("response", action.getText());
