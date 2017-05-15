@@ -50,6 +50,7 @@ public class LoginServer extends InsecureServer {
 		
 		try{
 			worker.interrupt();
+			//TODO: Wait until thread is finished
 		}catch(SecurityException ex){
 			return false;
 		}
@@ -75,8 +76,10 @@ public class LoginServer extends InsecureServer {
 		try {
 			db.openConnection(this.DB_USER, this.DB_PASS);
 		} catch(SQLException ex){
+			logger.log(Level.SEVERE, "could not connect to the database", ex);
 			err_code = 20;
 		} catch (ClassNotFoundException ex) {
+			logger.log(Level.SEVERE, "server failure during connection to the database", ex);
 			err_code = 21;
 		}
 		
@@ -88,7 +91,7 @@ public class LoginServer extends InsecureServer {
 				logger.log(Level.SEVERE, "could not read from network stream at address: " + sock.getInetAddress(), ex);
 			}
 			
-			if(readBuf != null && !readBuf.equals("")){
+			if(!readBuf.isEmpty()){
 				try {
 					jsonObj = (JSONObject) parser.parse(readBuf);
 				} catch (ParseException e1) {
@@ -112,9 +115,6 @@ public class LoginServer extends InsecureServer {
 				}catch(NullPointerException ex){
 					err_code = 21;
 				}
-				
-				if(err_code == 0 && action == null)
-					err_code = 53;
 	
 				if(err_code == 0){
 					responseObj.put("response", action.getText());
